@@ -24,5 +24,13 @@ router.post('/create', async (req, res) => {
     } catch (err) {
         res.render('games/create', { error: getErrorMessage(err), ...req.body });
     }
+});
+
+router.get('/details/:id', async (req, res) => { 
+    const game = await gameService.getOne(req.params.id).lean();
+    const isOwner = req.user?._id == game.owner._id;
+    const isUser = req.user?._id ? true : false;
+    const hasBought = game.boughtBy.some(b => b._id == req.user?._id);
+    res.render('games/details', { game, isOwner, isUser, hasBought });
 })
 module.exports = router;
