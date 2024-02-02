@@ -42,7 +42,7 @@ exports.isOwner = async (req, res, next) => {
     const gameId = req.params.id;
     const game = await gameService.getOne(gameId);
 
-    if(game.owner._id == req.user._id) {
+    if(game.owner._id == req.user?._id) {
         next();
     } else {
         return res.redirect('/games/catalog');
