@@ -17,8 +17,8 @@
         
         {{#if isMatch}}
         <div class="search-result">
-            {{#each match}}
             <div class="search-list">
+            {{#each match}}
                 <div class="game">
                     <div class="game-img">
                         <img src="{{image}}">
@@ -32,8 +32,8 @@
 
                     <a href="/games/detaisls/{{_id}}" class="btn-details">Details</a>
                 </div>
-            </div>
             {{/each}}
+            </div>
         </div>
         {{else}}
         <div class="no-match">
