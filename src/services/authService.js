@@ -3,7 +3,7 @@ const bcrypt = require('bcrypt');
 const User = require('../models/User');
 const generateToken = require('../utils/generateToken');
 
-exports.register = async (username, email, password) => {
+exports.register = async (username, email, password, rePassword) => {
     const user = await User.findOne({ email });
 
     if (user) {
@@ -13,10 +13,11 @@ exports.register = async (username, email, password) => {
     const newUser = new User({
         username,
         email,
-        password
+        password,
+        rePassword
     });
-    await user.save();
 
+    await User.create(newUser);
     
     const token = await generateToken(newUser);
 

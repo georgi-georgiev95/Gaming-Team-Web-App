@@ -10,10 +10,10 @@ router.get('/register',isGuest, (req, res) => {
 });
 
 router.post('/register',isGuest, async (req, res) => {
-    const { username, email, password } = req.body;
+    const { username, email, password, rePassword } = req.body;
 
     try {
-        const token = await authService.register(username, email, password);
+        const token = await authService.register(username, email, password, rePassword);
         res.cookie(ENV.COOKIE_NAME, token);
         res.redirect('/');
     } catch (err) {
