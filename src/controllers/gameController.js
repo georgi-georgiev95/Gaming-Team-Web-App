@@ -2,6 +2,8 @@ const router = require('express').Router();
 
 const gameService = require('../services/gameService');
 const { getErrorMessage } = require('../utils/errorExtractor');
+const { isUser, isOwner } = require('../middlewares/authMiddleware');
+
 
 router.get('/catalog', async (req, res) => {
     const games = await gameService.getAll().lean();
@@ -9,11 +11,11 @@ router.get('/catalog', async (req, res) => {
     res.render('games/catalog', { games, isGames });
 });
 
-router.get('/create', (req, res) => {
+router.get('/create', isUser, (req, res) => {
     res.render('games/create');
 });
 
-router.post('/create', async (req, res) => {
+router.post('/create', isUser, async (req, res) => {
     const gameData = {
         ...req.body,
         owner: req.user._id
@@ -34,12 +36,12 @@ router.get('/details/:id', async (req, res) => {
     res.render('games/details', { game, isOwner, isUser, hasBought });
 });
 
-router.get('/edit/:id', async (req, res) => {
+router.get('/edit/:id', isOwner, async (req, res) => {
     const game = await gameService.getOne(req.params.id).lean();
     res.render('games/edit', { game });
 });
 
-router.post('/edit/:id', async (req, res) => {
+router.post('/edit/:id', isOwner, async (req, res) => {
     const game = {
         ...req.body,
         owner: req.user._id
@@ -52,17 +54,17 @@ router.post('/edit/:id', async (req, res) => {
     }
 });
 
-router.get('/delete/:id', async (req, res) => {
+router.get('/delete/:id', isOwner, async (req, res) => {
     await gameService.delete(req.params.id);
     res.redirect('/games/catalog');
 });
 
-router.get('/buy/:id', async (req, res) => {
+router.get('/buy/:id', isUser, async (req, res) => {
     await gameService.buy(req.params.id, req.user._id);
     res.redirect('/games/details/' + req.params.id);
 });
 
-router.get('/search', async (req, res) => {
+router.get('/search', isUser, async (req, res) => {
     const games = await gameService.getAll().lean();
     const isMatch = true;
     const match = games;

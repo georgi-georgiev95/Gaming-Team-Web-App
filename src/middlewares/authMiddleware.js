@@ -1,5 +1,6 @@
 const jwt = require('../lib/jwt');
 const ENV = require('../utils/constants');
+const gameService = require('../services/gameService');
 
 exports.auth = async (req, res, next) => {
     const token = req.cookies[ENV.COOKIE_NAME];
@@ -35,4 +36,15 @@ exports.isGuest = (req, res, next) => {
     }
 
     next();
+}
+
+exports.isOwner = async (req, res, next) => {
+    const gameId = req.params.id;
+    const game = await gameService.getOne(gameId);
+
+    if(game.owner._id == req.user._id) {
+        next();
+    } else {
+        return res.redirect('/games/catalog');
+    }
 }
