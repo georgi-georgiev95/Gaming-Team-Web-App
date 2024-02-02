@@ -57,9 +57,23 @@ router.get('/delete/:id', async (req, res) => {
     res.redirect('/games/catalog');
 });
 
-router.get('/buy/:id', async (req, res) => { 
+router.get('/buy/:id', async (req, res) => {
     await gameService.buy(req.params.id, req.user._id);
     res.redirect('/games/details/' + req.params.id);
+});
+
+router.get('/search', async (req, res) => {
+    const games = await gameService.getAll().lean();
+    const isMatch = true;
+    const match = games;
+    res.render('games/search', { isMatch, match });
+});
+
+router.post('/search', async (req, res) => {
+    const { name, platform } = req.body;
+    const match = await gameService.search(name, platform).lean();
+    const isMatch = match.length > 0;
+    res.render('games/search', { match, isMatch });
 })
 
 module.exports = router;

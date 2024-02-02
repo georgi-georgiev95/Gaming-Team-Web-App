@@ -17,5 +17,7 @@ exports.edit = async (id, gameData) => {
 
 exports.delete = (id) => Game.findByIdAndDelete(id);
 
-exports.buy = (id, userId) => Game.findByIdAndUpdate(id, {$push : {boughtBy: userId}});
+exports.buy = (id, userId) => Game.findByIdAndUpdate(id, { $push: { boughtBy: userId } });
+
+exports.search = (name, platform) => Game.find({ name: new RegExp(name, 'i'), platform: new RegExp(platform, 'i') });
   
