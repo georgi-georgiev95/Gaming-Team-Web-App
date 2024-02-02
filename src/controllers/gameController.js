@@ -39,4 +39,27 @@ router.get('/edit/:id', async (req, res) => {
     res.render('games/edit', { game });
 });
 
+router.post('/edit/:id', async (req, res) => {
+    const game = {
+        ...req.body,
+        owner: req.user._id
+    };
+    try {
+        await gameService.edit(req.params.id, game);
+        res.redirect('/games/details/' + req.params.id);
+    } catch (err) {
+        res.render('games/edit', { error: getErrorMessage(err), game });
+    }
+});
+
+router.get('/delete/:id', async (req, res) => {
+    await gameService.delete(req.params.id);
+    res.redirect('/games/catalog');
+});
+
+router.get('/buy/:id', async (req, res) => { 
+    await gameService.buy(req.params.id, req.user._id);
+    res.redirect('/games/details/' + req.params.id);
+})
+
 module.exports = router;
